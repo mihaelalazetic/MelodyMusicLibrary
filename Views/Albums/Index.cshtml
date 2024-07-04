@@ -11,9 +11,12 @@
     <div class="row mb-4 d-flex align-items-center justify-content-between">
         <div class="col d-inline-flex justify-content-md-start" >
             <h1 class="table-title" >Albums</h1>
-            <div style="margin-left:1rem; align-content:center;">
-                <a asp-action="Create" class="rounded-pill btn btn-outline-warning">+</a>
+            @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+            {
+                <div style="margin-left:1rem; align-content:center;">
+                    <a asp-action="Create" class="rounded-pill btn btn-outline-warning">+</a>
             </div>
+            }
         </div>
 
 
@@ -83,10 +86,19 @@
                         }
                     </td>
                     <td>
-                        <a asp-action="AddSongsToAlbum" asp-route-id="@item.Id" class="btn btn-outline-warning btn-sm rounded-pill px-3 py-2">Add Songs</a>
-                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-success btn-sm rounded-pill px-3 py-2">Edit</a>
-                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-info btn-sm rounded-pill px-3 py-2 ml-1">Details</a> 
-                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger btn-sm rounded-pill px-3 py-2 ml-1">Delete</a>
+                        @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                        {
+                            <a asp-action="AddSongsToAlbum" asp-route-id="@item.Id" class="btn btn-outline-warning btn-sm rounded-pill px-3 py-2">Add Songs</a>
+                        } |
+                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-info btn-sm rounded-pill px-3 py-2 ml-1">Details</a>
+                        @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                        {
+                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-success btn-sm rounded-pill px-3 py-2">Edit</a>
+                        }
+                        @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                        {
+                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger btn-sm rounded-pill px-3 py-2 ml-1">Delete</a>
+                        }
                     </td>
                 </tr>
             }

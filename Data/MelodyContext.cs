@@ -5,13 +5,15 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using MelodyMusicLibrary.Models;
 using System.Reflection.Emit;
+using MelodyMusicLibrary.Areas.Identity.Data;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace MelodyMusicLibrary.Data
 {
-    public class MelodyContext : DbContext
+    public class MelodyContext : IdentityDbContext<MelodyUser>
     {
         public MelodyContext(DbContextOptions<MelodyContext> options)
-            : base(options)
+             : base(options)
         {
         }
 

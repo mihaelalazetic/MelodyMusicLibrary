@@ -9,6 +9,7 @@ using MelodyMusicLibrary.Data;
 using MelodyMusicLibrary.Models;
 using MelodyMusicLibrary.ViewModels;
 using System.IO;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MelodyMusicLibrary.Controllers
 {
@@ -96,6 +97,7 @@ namespace MelodyMusicLibrary.Controllers
         }
 
         // GET: Albums/Create
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create()
         {
             var artists = await _context.Artist.OrderBy(a => a.Name)
@@ -122,6 +124,7 @@ namespace MelodyMusicLibrary.Controllers
         }
 
         // POST: Albums/Create
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(AlbumCreateViewModel viewModel)
@@ -178,6 +181,7 @@ namespace MelodyMusicLibrary.Controllers
         }
 
         // GET: Albums/Edit/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -213,6 +217,7 @@ namespace MelodyMusicLibrary.Controllers
         // POST: Albums/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, AlbumEditViewModel viewmodel)
@@ -296,6 +301,7 @@ namespace MelodyMusicLibrary.Controllers
 
 
         // GET: Albums/Delete/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -318,6 +324,7 @@ namespace MelodyMusicLibrary.Controllers
         }
 
         // POST: Albums/Delete/5
+        [Authorize(Roles = "Admin")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -360,6 +367,7 @@ namespace MelodyMusicLibrary.Controllers
         }
 
         // GET: Albums/AddSongsToAlbum/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> AddSongsToAlbum(int? id)
         {
             if (id == null)
@@ -380,13 +388,14 @@ namespace MelodyMusicLibrary.Controllers
             {
                 AlbumId = album.Id,
                 AlbumTitle = album.Title,
-                AvailableSongs = await _context.Song.Where(s=>s.AlbumId != id).ToListAsync()
+                AvailableSongs = await _context.Song.Where(s => s.AlbumId != id).ToListAsync()
             };
 
             return View(model);
         }
 
         // POST: Albums/AddSongsToAlbum/5
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddSongsToAlbum(AddSongsToAlbumViewModel model)
@@ -428,6 +437,7 @@ namespace MelodyMusicLibrary.Controllers
             return View(model);
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> RemoveSongFromAlbum(int? id, int? songId)
         {
             if (id == null || songId == null)

@@ -1,4 +1,6 @@
-﻿using MelodyMusicLibrary.Models;
+﻿using MelodyMusicLibrary.Areas.Identity.Data;
+using MelodyMusicLibrary.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -8,10 +10,32 @@ namespace MelodyMusicLibrary.Data
 {
     public static class SeedData
     {
+        public static async Task CreateUserRoles(IServiceProvider serviceProvider)
+        {
+            var RoleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+            var UserManager = serviceProvider.GetRequiredService<UserManager<MelodyUser>>();
+            IdentityResult roleResult;
+            //Add Admin Role
+            var roleCheck = await RoleManager.RoleExistsAsync("Admin");
+            if (!roleCheck) { roleResult = await RoleManager.CreateAsync(new IdentityRole("Admin")); }
+
+            MelodyUser user = await UserManager.FindByEmailAsync("admin@mvcmovie.com");
+            if (user == null)
+            {
+                var User = new MelodyUser();
+                User.Email = "admin@melody.com";
+                User.UserName = "admin@melody.com";
+                string userPWD = "Admin123";
+                IdentityResult chkUser = await UserManager.CreateAsync(User, userPWD);
+                //Add default User to Role Admin      
+                if (chkUser.Succeeded) { var result1 = await UserManager.AddToRoleAsync(User, "Admin"); }
+            }
+        }
         public static void Initialize(IServiceProvider serviceProvider)
         {
             using (var context = new MelodyContext(serviceProvider.GetRequiredService<DbContextOptions<MelodyContext>>()))
             {
+                CreateUserRoles(serviceProvider).Wait();
                 // Check if data already exists
                 if (context.Album.Any() || context.Artist.Any() || context.Genre.Any() || context.Song.Any())
                 {

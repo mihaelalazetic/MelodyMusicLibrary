@@ -18,10 +18,10 @@ label, h1, dt, dd {
 .custom-table td {
     vertical-align: middle;
 }
-/* Apply general styling for all table headers */
+
 th {
-    background-color: #312F2F; /* Adjust to match your table's background */
-    color: white; /* Adjust to match your table's text color */
+    background-color: #312F2F; 
+    color: white;
     padding: 10px;
 }
 
@@ -53,3 +53,18 @@ th:last-child {
 .table-title {
     color: #D60089;
 }
+
+#login, #register , #logout{
+    margin: 0.5rem;
+    border-radius: 20px !important;
+    border: 1px solid;
+    color: white !important;
+    text-align: center;
+    padding: 10px 20px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+    #login:hover, #register:hover {
+        background: linear-gradient(to right, #f5ec33, #fe9d22, #fd3297, #C5107A);
+        color: #333; /* Dark text color */
+    }
