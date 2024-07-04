@@ -1,0 +1,72 @@
+﻿@model MelodyMusicLibrary.ViewModels.AlbumEditViewModel
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit Album</h1>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="text-center">
+            <img src="@Model.Album.CoverUrl" alt="Image" class="img-thumbnail" style="max-width: 100%; height: auto; max-height: 500px;" />
+        </div>
+    </div>
+    <div class="col-md-4">
+            <form asp-action="Edit">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input class="bg-transparent" type="hidden" asp-for="Album.Id" />
+
+                <div class="form-group">
+                    <label asp-for="Album.Title" class="control-label">Title</label>
+                    <input asp-for="Album.Title" class="form-control" />
+                    <span asp-validation-for="Album.Title" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Album.ReleaseDate" class="control-label">Release Date</label>
+                    <input asp-for="Album.ReleaseDate" class="form-control" />
+                    <span asp-validation-for="Album.ReleaseDate" class="text-danger"></span>
+                </div>
+
+
+                <div class="form-group">
+                    <label class="control-label">Artists</label>
+                    <select asp-for="SelectedArtist" class="form-control js-example-basic-multiple" asp-items="Model.ArtistList"></select>
+                    <span asp-validation-for="SelectedArtist" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label">Genres</label>
+                    <select asp-for="SelectedGenres" class="form-control js-example-basic-multiple" asp-items="Model.GenresList"></select>
+                    <span asp-validation-for="SelectedGenres" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Album.CoverUrl" class="control-label">Cover URL</label>
+                    <input asp-for="Album.CoverUrl" class="form-control" />
+                    <span asp-validation-for="Album.CoverUrl" class="text-danger"></span>
+                </div>
+
+
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">Save</button>
+                    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+    </div>
+
+</div>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $(".js-example-basic-multiple").select2();
+        });
+    </script>
+}

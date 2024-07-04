@@ -1,0 +1,63 @@
+﻿@model MelodyMusicLibrary.Models.Album
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<div class="container mt-5">
+    <h1 class="table-title">Album Details</h1>
+    <div class="row ">
+        <div class="col-lg-3">
+            <div class="text-center">
+                <img src="@Model.CoverUrl" alt="Image" class="img-thumbnail" style="max-width: 100%; height: auto; max-height: 500px;" />
+            </div>
+        </div>
+        <div class="col-md-8">
+            <dl class="row">
+                <dt class="col-sm-3">
+                    @Html.DisplayNameFor(model => model.Title)
+                </dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.Title)
+                </dd>
+                <dt class="col-sm-3">
+                    @Html.DisplayNameFor(model => model.ReleaseDate)
+                </dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.ReleaseDate)
+                </dd>
+                <dt class="col-sm-3">
+                    @Html.DisplayNameFor(model => model.AlbumArtists)
+                </dt>
+                <dd class="col-sm-9">
+                    @foreach (var artist in Model.AlbumArtists)
+                    {
+                        <a asp-controller="Artists" asp-action="Details" asp-route-id="@artist.ArtistId" class="badge badge-secondary">
+                            @artist.Artist.Name
+                        </a>
+                    }
+                </dd>
+                <dt class="col-sm-3">
+                    @Html.DisplayNameFor(model => model.AlbumGenres)
+                </dt>
+                <dd class="col-sm-9">
+                    @foreach (var genre in Model.AlbumGenres)
+                    {
+                        <div class="d-inline-block">
+                        <a asp-controller="Genres" asp-action="Details" asp-route-id="@genre.GenreId">
+                            <div class="genre-image-container">
+                                <img src="~/images/genres/@(genre.Genre.Name).png" alt="@genre.Genre.Name" class="img-thumbnail bg-dark" />
+                                <div class="genre-name-overlay">@genre.Genre.Name</div>
+                            </div>
+                        </a>
+                        </div>
+                    }
+                </dd>
+            </dl>
+            <div>
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-success rounded-pill px-3 py-2">Edit</a>
+                <a asp-action="Index" class="btn btn-outline-secondary rounded-pill px-3 py-2">Back to List</a>
+            </div>
+        </div>
+    </div>
+</div>

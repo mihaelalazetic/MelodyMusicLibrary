@@ -1,0 +1,94 @@
+﻿@model MelodyMusicLibrary.ViewModels.AlbumSearchViewModel
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="stylesheet" href="~/css/album.css" asp-append-version="true" />
+
+<div class="container mt-5">
+    <div class="row mb-4 d-flex align-items-center justify-content-between">
+        <div class="col d-inline-flex justify-content-md-start" >
+            <h1 class="table-title" >Albums</h1>
+            <div style="margin-left:1rem; align-content:center;">
+                <a asp-action="Create" class="rounded-pill btn btn-outline-warning">+</a>
+            </div>
+        </div>
+
+
+        <div class="col-5">
+            <form asp-controller="Albums" asp-action="Index" method="get" class="d-inline-flex justify-content-center align-items-center">
+                <div class="form-group mr-2">
+                    <input type="text" asp-for="Title" placeholder="Search by Title" class="form-control" />
+                </div>
+                <div class="form-group mr-2">
+                    <select asp-for="Genre" class="form-control js-example-basic-multiple" asp-items="Model.Genres">
+                    </select>
+                </div>
+                <div class="form-group mr-2">
+                    <select asp-for="Artist" class="form-control js-example-basic-multiple" asp-items="Model.Artists">
+                    </select>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Filter" class="btn btn-primary" />
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <table class="table table-dark table-hover custom-table">
+        <thead>
+            <tr>
+                <th>@Html.DisplayNameFor(model => model.Albums[0].CoverUrl)</th>
+                <th>@Html.DisplayNameFor(model => model.Albums[0].Title)</th>
+                <th>@Html.DisplayNameFor(model => model.Albums[0].ReleaseDate)</th>
+                <th>@Html.DisplayNameFor(model => model.Albums[0].AlbumArtists)</th>
+                <th>@Html.DisplayNameFor(model => model.Albums[0].AlbumGenres)</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Albums)
+            {
+                <tr>
+                    <td>
+                        <img src="@item.CoverUrl" alt="Image" class="img-thumbnail font" />
+                    </td>
+                    <td>
+                        <a asp-controller="Albums" asp-action="Details" asp-route-id="@item.Id" class="btn-outline-warning text-decoration-none p-1" style="border-radius:20px">
+                            @item.Title
+                        </a> <br />
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ReleaseDate)
+                    </td>
+                    <td>
+                        @foreach (var artist in item.AlbumArtists)
+                        {
+                            <a asp-controller="Artists" asp-action="Details" asp-route-id="@artist.ArtistId" class="badge font">
+                                @artist.Artist.Name
+                            </a> <br />
+                        }
+                    </td>
+                    <td>
+                        @foreach (var genre in item.AlbumGenres)
+                        {
+                            <a asp-controller="Genres" asp-action="Details" asp-route-id="@genre.GenreId">
+                                <div class="genre-image-container">
+                                    <img src="~/images/genres/@(genre.Genre.Name).png" alt="@genre.Genre.Name" class="img-thumbnail bg-dark " />
+                                    <div class="genre-name-overlay">@genre.Genre.Name</div>
+                                </div>
+                            </a>
+                        }
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-success btn-sm rounded-pill px-3 py-2">Edit</a>
+                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-info btn-sm rounded-pill px-3 py-2 ml-1">Details</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger btn-sm rounded-pill px-3 py-2 ml-1">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,64 @@
+﻿
+body {
+    background-color: #312F2F;
+}
+label, h1, dt, dd {
+    color: #fff;
+}
+.font {
+    font-size:1rem;
+}
+
+.custom-table th {
+    background-color: #D60089;
+    color: #fff;
+    font-size: 1.2rem;
+}
+
+.custom-table td {
+    vertical-align: middle;
+}
+/* Apply general styling for all table headers */
+th {
+    background-color: #312F2F; /* Adjust to match your table's background */
+    color: white; /* Adjust to match your table's text color */
+    padding: 10px;
+}
+
+th:first-child {
+    border-top-left-radius: 1rem;
+    border-bottom-left-radius: 1rem;
+}
+
+th:last-child {
+    border-top-right-radius: 1rem;
+    border-bottom-right-radius: 1rem;
+}
+
+.custom-button {
+    background-color: #D60089;
+    color: #fff;
+    transition: background-color 0.3s ease;
+}
+
+.custom-button:hover {
+    background-color: #F8B5B9;
+}
+
+.img-thumbnail {
+    max-width: 80px;
+    max-height: 80px;
+}
+
+.table-title {
+    color: #D60089;
+}
+
+.badge-warning {
+    color: black;
+    padding: 0 10px;
+
+}
+.badge-warning:hover {
+    color: #D60089;
+}

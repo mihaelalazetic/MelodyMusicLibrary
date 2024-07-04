@@ -1,0 +1,33 @@
+﻿.genre-image-container {
+    position: relative;
+    display: inline-block;
+    margin-right: 10px; /* Adjust margin as needed */
+}
+
+    .genre-image-container img {
+        display: block;
+        width: 100px; /* Adjust image size as needed */
+        height: auto;
+        border: 1px solid #ccc0; /* Optional: Add border for better visibility */
+        transition: opacity 0.3s ease-in-out; /* Optional: Smooth fade effect */
+    }
+
+    .genre-image-container .genre-name-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent black overlay */
+        color: #fff; /* Text color */
+        font-size: 14px; /* Font size of genre name */
+        opacity: 0; /* Initially hidden */
+        transition: opacity 0.3s ease-in-out; /* Smooth transition */
+    }
+
+    .genre-image-container:hover .genre-name-overlay {
+        opacity: 1; /* Show overlay on hover */
+    }
