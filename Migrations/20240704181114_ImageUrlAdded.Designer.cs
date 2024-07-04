@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MelodyMusicLibrary.Migrations
 {
     [DbContext(typeof(MelodyContext))]
-    [Migration("20240703213012_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20240704181114_ImageUrlAdded")]
+    partial class ImageUrlAdded
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -114,6 +114,10 @@ namespace MelodyMusicLibrary.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()

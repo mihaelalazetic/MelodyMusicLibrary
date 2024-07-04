@@ -1,0 +1,35 @@
+﻿@model MelodyMusicLibrary.ViewModels.AddSongsToAlbumViewModel
+
+@{
+    ViewData["Title"] = "Add Songs to Album";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-5">
+    <h1>Add Songs to Album: @Model.AlbumTitle</h1>
+
+    <form asp-controller="Albums" asp-action="AddSongsToAlbum" method="post">
+        <input type="hidden" asp-for="AlbumId" />
+
+        <div class="form-group">
+            <label for="SelectedSongs">Select Songs:</label>
+            <select id="SelectedSongs" name="SelectedSongs" class="form-control" multiple>
+                @foreach (var song in Model.AvailableSongs)
+                {
+                    <option value="@song.Id">@song.Title</option>
+                }
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Add Songs</button>
+    </form>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#SelectedSongs').select2();
+        });
+    </script>
+}

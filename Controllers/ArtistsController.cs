@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MelodyMusicLibrary.Data;
 using MelodyMusicLibrary.Models;
+using MelodyMusicLibrary.ViewModels;
 
 namespace MelodyMusicLibrary.Controllers
 {
@@ -46,23 +47,27 @@ namespace MelodyMusicLibrary.Controllers
         // GET: Artists/Create
         public IActionResult Create()
         {
-            return View();
+            return View(new ArtistViewModel());
         }
 
         // POST: Artists/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description")] Artist artist)
+        public async Task<IActionResult> Create(ArtistViewModel viewModel)
         {
             if (ModelState.IsValid)
             {
+                var artist = new Artist
+                {
+                    Name = viewModel.Name,
+                    Description = viewModel.Description
+                };
+
                 _context.Add(artist);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(artist);
+            return View(viewModel);
         }
 
         // GET: Artists/Edit/5
@@ -78,17 +83,23 @@ namespace MelodyMusicLibrary.Controllers
             {
                 return NotFound();
             }
-            return View(artist);
+
+            var viewModel = new ArtistViewModel
+            {
+                Id = artist.Id,
+                Name = artist.Name,
+                Description = artist.Description
+            };
+
+            return View(viewModel);
         }
 
         // POST: Artists/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description")] Artist artist)
+        public async Task<IActionResult> Edit(int id, ArtistViewModel viewModel)
         {
-            if (id != artist.Id)
+            if (id != viewModel.Id)
             {
                 return NotFound();
             }
@@ -97,12 +108,16 @@ namespace MelodyMusicLibrary.Controllers
             {
                 try
                 {
+                    var artist = await _context.Artist.FindAsync(id);
+                    artist.Name = viewModel.Name;
+                    artist.Description = viewModel.Description;
+
                     _context.Update(artist);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ArtistExists(artist.Id))
+                    if (!ArtistExists(viewModel.Id))
                     {
                         return NotFound();
                     }
@@ -113,7 +128,7 @@ namespace MelodyMusicLibrary.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(artist);
+            return View(viewModel);
         }
 
         // GET: Artists/Delete/5

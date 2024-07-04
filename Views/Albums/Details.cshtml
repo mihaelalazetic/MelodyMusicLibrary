@@ -32,7 +32,7 @@
                 <dd class="col-sm-9">
                     @foreach (var artist in Model.AlbumArtists)
                     {
-                        <a asp-controller="Artists" asp-action="Details" asp-route-id="@artist.ArtistId" class="badge badge-secondary">
+                        <a asp-controller="Artists" asp-action="Details" asp-route-id="@artist.ArtistId" class="badge badge-secondary font">
                             @artist.Artist.Name
                         </a>
                     }

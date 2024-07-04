@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MelodyMusicLibrary.Models
 {
@@ -17,5 +18,15 @@ namespace MelodyMusicLibrary.Models
         public Album? Album { get; set; }
         public ICollection<SongArtist> SongArtists { get; set; }
         public ICollection<SongGenre> SongGenres { get; set; }
+
+        [NotMapped]
+        public string Minutes
+        {
+            get
+            {
+                TimeSpan time = TimeSpan.FromSeconds(Duration);
+                return $"{time.Minutes:D2}:{time.Seconds:D2}";
+            }
+        }
     }
 }

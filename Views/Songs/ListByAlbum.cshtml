@@ -1,0 +1,34 @@
+﻿@model IEnumerable<MelodyMusicLibrary.Models.Song>
+
+@{
+    ViewData["Title"] = "Songs in Album";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-5">
+    <h1 class="table-title text-center">Songs in Album @(String.Concat(Model.Select(x=>x.Album.Title).ToList()))</h1>
+    <div class="table-responsive">
+        <table class="table table-dark table-hover custom-table">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Duration</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var song in Model)
+                {
+                    <tr>
+                        <td>@song.Title</td>
+                        <td>@song.Minutes</td>
+                        <td>
+                            <a asp-action="RemoveSongFromAlbum" asp-route-id="@song.AlbumId" asp-route-songId="@song.Id" class="btn btn-outline-danger btn-sm rounded-pill px-3 py-2">Remove Song</a>
+                        </td>
+
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

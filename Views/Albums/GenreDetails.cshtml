@@ -1,0 +1,51 @@
+﻿@model MelodyMusicLibrary.Models.Genre
+
+@{
+    ViewData["Title"] = "Genre Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-5">
+    <h1 class="table-title text-center">@* @Html.DisplayFor(model => model.Name) *@
+        <img src="~/images/genres/@(Model.Name).png" alt="@Model.Name" class="img-thumbnail bg-dark" />
+    </h1>
+
+    <div class="row justify-content-center mt-4">
+        <div class="col-md-10">
+            <h2 class="mb-3 text-warning">Albums</h2>
+
+            <div class="table-responsive">
+                <table class="table table-dark table-hover custom-table">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Release Date</th>
+                            <th>Cover</th>
+                            <th>Songs</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var albumGenre in Model.AlbumGenres)
+                        {
+                            <tr>
+                                <td>@albumGenre.Album.Title</td>
+                                <td>@albumGenre.Album.ReleaseDate.ToShortDateString()</td>
+                                <td>
+                                    <img src="@albumGenre.Album.CoverUrl" alt="@albumGenre.Album.Title" class="img-thumbnail" style="max-width: 100px; height: auto;" />
+                                </td>
+                                <td>
+                                    <ul>
+                                        @foreach (var song in albumGenre.Album.Songs)
+                                        {
+                                            <li>@song.Title</li>
+                                        }
+                                    </ul>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

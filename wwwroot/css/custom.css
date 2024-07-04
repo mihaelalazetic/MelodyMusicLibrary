@@ -53,12 +53,3 @@ th:last-child {
 .table-title {
     color: #D60089;
 }
-
-.badge-warning {
-    color: black;
-    padding: 0 10px;
-
-}
-.badge-warning:hover {
-    color: #D60089;
-}

@@ -5,7 +5,6 @@
     Layout = "~/Views/Shared/_Layout.cshtml"; // Assuming you have a shared layout file
 }
 
-
 <div class="container mt-5">
     <div class="row mb-4 d-flex align-items-center justify-content-between">
         <div class="col d-inline-flex justify-content-md-start">
@@ -14,19 +13,19 @@
                 <a asp-action="Create" class="rounded-pill btn btn-outline-warning">+</a>
             </div>
         </div>
-   @*      <div class="col-5">
-            <form asp-controller="Artists" asp-action="Index" method="get" class="d-inline-flex justify-content-center align-items-center">
-                <div class="form-group mr-2">
-                    <input type="text" asp-for="Name" placeholder="Search by Name" class="form-control" />
-                </div>
-                <div class="form-group mr-2">
-                    <input type="text" asp-for="Description" placeholder="Search by Description" class="form-control" />
-                </div>
-                <div class="form-group">
-                    <input type="submit" value="Filter" class="btn btn-primary" />
-                </div>
-            </form>
-        </div> *@
+        @*<div class="col-5">
+        <form asp-controller="Artists" asp-action="Index" method="get" class="d-inline-flex justify-content-center align-items-center">
+        <div class="form-group mr-2">
+        <input type="text" asp-for="Name" placeholder="Search by Name" class="form-control" />
+        </div>
+        <div class="form-group mr-2">
+        <input type="text" asp-for="Description" placeholder="Search by Description" class="form-control" />
+        </div>
+        <div class="form-group">
+        <input type="submit" value="Filter" class="btn btn-primary" />
+        </div>
+        </form>
+        </div>*@
     </div>
 
     <table class="table table-dark table-hover custom-table">
@@ -41,8 +40,12 @@
             @foreach (var item in Model)
             {
                 <tr>
-                    <td>@Html.DisplayFor(modelItem => item.Name)</td>
-                    <td>@Html.DisplayFor(modelItem => item.Description)</td>
+                    <td>
+                        <a asp-controller="Albums" asp-action="Index" asp-route-artist="@item.Name" class="btn-outline-warning text-decoration-none p-1 text-decoration-underline d-inline-block" style="border-radius:20px; ">
+                            @Html.DisplayFor(modelItem => item.Name)
+                        </a>
+                    </td>
+                    <td style="width:70%">@Html.DisplayFor(modelItem => item.Description)</td>
                     <td>
                         <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-success btn-sm rounded-pill px-3 py-2">Edit</a>
                         <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-info btn-sm rounded-pill px-3 py-2 ml-1">Details</a>

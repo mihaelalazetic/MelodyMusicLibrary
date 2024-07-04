@@ -53,7 +53,7 @@ namespace MelodyMusicLibrary.Controllers
                                                   Value = g.Name,
                                                   Text = g.Name
                                               }).ToListAsync();
-            genres.Insert(0, new SelectListItem { Value = "", Text = "All" });
+            genres.Insert(0, new SelectListItem { Value = "", Text = "Genre" });
             searchModel.Genres = new SelectList(genres, "Value", "Text");
 
             // Populate SelectList for artists
@@ -63,7 +63,7 @@ namespace MelodyMusicLibrary.Controllers
                                                     Value = a.Name,
                                                     Text = a.Name
                                                 }).ToListAsync();
-            artists.Insert(0, new SelectListItem { Value = "", Text = "All" });
+            artists.Insert(0, new SelectListItem { Value = "", Text = "Artist" });
             searchModel.Artists = new SelectList(artists, "Value", "Text");
 
             // Retrieve albums matching the query
@@ -81,11 +81,12 @@ namespace MelodyMusicLibrary.Controllers
             }
 
             var album = await _context.Album
-                .Include(a => a.AlbumArtists)
+            .Include(a => a.AlbumArtists)
                 .ThenInclude(aa => aa.Artist)
-                .Include(a => a.AlbumGenres)
+            .Include(a => a.AlbumGenres)
                 .ThenInclude(ag => ag.Genre)
-                .FirstOrDefaultAsync(a => a.Id == id);
+            .Include(a => a.Songs)
+            .FirstOrDefaultAsync(a => a.Id == id);
             if (album == null)
             {
                 return NotFound();
@@ -95,25 +96,85 @@ namespace MelodyMusicLibrary.Controllers
         }
 
         // GET: Albums/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            return View();
+            var artists = await _context.Artist.OrderBy(a => a.Name)
+                                               .Select(a => new SelectListItem
+                                               {
+                                                   Value = a.Id.ToString(),
+                                                   Text = a.Name
+                                               }).ToListAsync();
+
+            var genres = await _context.Genre.OrderBy(g => g.Name)
+                                             .Select(g => new SelectListItem
+                                             {
+                                                 Value = g.Id.ToString(),
+                                                 Text = g.Name
+                                             }).ToListAsync();
+
+            var viewModel = new AlbumCreateViewModel
+            {
+                ArtistList = new SelectList(artists, "Value", "Text"),
+                GenresList = new SelectList(genres, "Value", "Text")
+            };
+
+            return View(viewModel);
         }
 
         // POST: Albums/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,ReleaseDate,CoverUrl")] Album album)
+        public async Task<IActionResult> Create(AlbumCreateViewModel viewModel)
         {
             if (ModelState.IsValid)
             {
+                // Map ViewModel to Album model
+                var album = new Album
+                {
+                    Title = viewModel.Title,
+                    ReleaseDate = viewModel.ReleaseDate,
+                    CoverUrl = viewModel.CoverUrl
+                };
+
+                // Add selected artists to the album
+                if (viewModel.SelectedArtist != null)
+                {
+                    foreach (var artistId in viewModel.SelectedArtist)
+                    {
+                        album.AlbumArtists.Add(new AlbumArtist { ArtistId = artistId });
+                    }
+                }
+
+                // Add selected genres to the album
+                if (viewModel.SelectedGenres != null)
+                {
+                    foreach (var genreId in viewModel.SelectedGenres)
+                    {
+                        album.AlbumGenres.Add(new AlbumGenre { GenreId = genreId });
+                    }
+                }
+
                 _context.Add(album);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(album);
+
+            // If model state is not valid, re-render the view with errors
+            viewModel.ArtistList = new SelectList(await _context.Artist.OrderBy(a => a.Name)
+                                                                       .Select(a => new SelectListItem
+                                                                       {
+                                                                           Value = a.Id.ToString(),
+                                                                           Text = a.Name
+                                                                       }).ToListAsync(), "Value", "Text");
+
+            viewModel.GenresList = new SelectList(await _context.Genre.OrderBy(g => g.Name)
+                                                                     .Select(g => new SelectListItem
+                                                                     {
+                                                                         Value = g.Id.ToString(),
+                                                                         Text = g.Name
+                                                                     }).ToListAsync(), "Value", "Text");
+
+            return View(viewModel);
         }
 
         // GET: Albums/Edit/5
@@ -243,7 +304,11 @@ namespace MelodyMusicLibrary.Controllers
             }
 
             var album = await _context.Album
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .Include(a => a.AlbumArtists)
+                .ThenInclude(aa => aa.Artist)
+                .Include(a => a.AlbumGenres)
+                .ThenInclude(ag => ag.Genre)
+                .FirstOrDefaultAsync(a => a.Id == id);
             if (album == null)
             {
                 return NotFound();
@@ -270,6 +335,153 @@ namespace MelodyMusicLibrary.Controllers
         private bool AlbumExists(int id)
         {
             return _context.Album.Any(e => e.Id == id);
+        }
+
+        // GET: Albums/GenreDetails/5
+        public async Task<IActionResult> GenreDetails(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var genre = await _context.Genre
+                  .Include(g => g.AlbumGenres)
+                  .ThenInclude(ag => ag.Album)
+                      .ThenInclude(a => a.Songs)
+                  .FirstOrDefaultAsync(g => g.Id == id);
+
+            if (genre == null)
+            {
+                return NotFound();
+            }
+
+            return View(genre);
+        }
+
+        // GET: Albums/AddSongsToAlbum/5
+        public async Task<IActionResult> AddSongsToAlbum(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var album = await _context.Album
+                .Include(a => a.Songs)
+                .FirstOrDefaultAsync(a => a.Id == id);
+
+            if (album == null)
+            {
+                return NotFound();
+            }
+
+            var model = new AddSongsToAlbumViewModel
+            {
+                AlbumId = album.Id,
+                AlbumTitle = album.Title,
+                AvailableSongs = await _context.Song.Where(s=>s.AlbumId != id).ToListAsync()
+            };
+
+            return View(model);
+        }
+
+        // POST: Albums/AddSongsToAlbum/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddSongsToAlbum(AddSongsToAlbumViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var album = await _context.Album
+                    .Include(a => a.Songs)
+                    .FirstOrDefaultAsync(a => a.Id == model.AlbumId);
+
+                if (album == null)
+                {
+                    return NotFound();
+                }
+
+                if (model.SelectedSongs != null && model.SelectedSongs.Any())
+                {
+                    foreach (var songId in model.SelectedSongs)
+                    {
+                        var song = await _context.Song.FindAsync(songId);
+                        if (song != null)
+                        {
+                            // Add song to album if it doesn't already exist
+                            if (!album.Songs.Any(s => s.Id == songId))
+                            {
+                                album.Songs.Add(song);
+                            }
+                        }
+                    }
+
+                    await _context.SaveChangesAsync();
+
+                    return RedirectToAction(nameof(Details), new { id = model.AlbumId });
+                }
+            }
+
+            // If model state is not valid or no songs were selected, reload the view with errors
+            model.AvailableSongs = await _context.Song.ToListAsync(); // Refresh available songs list
+            return View(model);
+        }
+
+        public async Task<IActionResult> RemoveSongFromAlbum(int? id, int? songId)
+        {
+            if (id == null || songId == null)
+            {
+                return NotFound();
+            }
+
+            var album = await _context.Album
+                .Include(a => a.Songs)
+                .FirstOrDefaultAsync(a => a.Id == id);
+
+            if (album == null)
+            {
+                return NotFound();
+            }
+
+            var songToRemove = album.Songs.FirstOrDefault(s => s.Id == songId);
+
+            if (songToRemove == null)
+            {
+                return NotFound();
+            }
+
+            try
+            {
+                album.Songs.Remove(songToRemove);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException /* ex */)
+            {
+                // Log the error (uncomment ex variable name and write a log)
+                return RedirectToAction(nameof(Index));
+            }
+
+            return RedirectToAction(nameof(SongsInAlbum), new { id = album.Id }); // Redirect to the album's song list
+        }
+
+        public async Task<IActionResult> SongsInAlbum(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var album = await _context.Album
+                .Include(a => a.Songs)
+                .FirstOrDefaultAsync(a => a.Id == id);
+
+            if (album == null)
+            {
+                return NotFound();
+            }
+
+            return View(album.Songs.ToList());
         }
     }
 }
