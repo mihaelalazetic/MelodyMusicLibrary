@@ -27,7 +27,8 @@
                         <td><i class="fa fa-play"></i></td>
                         <td>@song.Title</td>
                         <td>@song.Minutes</td>
-                        @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                        @if (
+                            .Identity.IsAuthenticated && User.IsInRole("Admin"))
                         {
                             <td>
                                 <a asp-action="RemoveSongFromAlbum" asp-route-id="@song.AlbumId" asp-route-songId="@song.Id" class="btn btn-outline-danger btn-sm rounded-pill px-3 py-2">Remove Song</a>
