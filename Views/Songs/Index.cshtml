@@ -23,6 +23,7 @@
     <table class="table table-dark table-hover custom-table">
         <thead>
             <tr>
+                <th></th>
                 <th>Title</th>
                 <th>Duration</th>
                 <th>Album</th>
@@ -34,9 +35,19 @@
             @foreach (var item in Model)
             {
                 <tr>
-                    <td>@Html.DisplayFor(modelItem => item.Title)</td>
+                    <td><i class="fa fa-play"></i></td>
+                    <td>
+                        <a asp-controller="Songs" asp-action="Details" asp-route-id="@item.Id" class="btn-outline-warning text-decoration-none p-1" style="border-radius: 20px">
+                            @Html.DisplayFor(modelItem => item.Title)
+                        </a>
+                    </td>
                     <td>@Html.DisplayFor(modelItem => item.Minutes)</td>
-                    <td>@Html.DisplayFor(modelItem => item.AlbumTitle)</td>
+                    <td>
+                        <a asp-controller="Albums" asp-action="Details" asp-route-id="@item.AlbumId" class="btn-outline-warning text-decoration-none p-1" style="border-radius: 20px">
+
+                            @Html.DisplayFor(modelItem => item.AlbumTitle)
+                        </a>
+                        </td>
                     <td>@Html.DisplayFor(modelItem => item.ArtistNames)</td>
                     <td>
                         @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))

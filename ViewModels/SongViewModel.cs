@@ -8,7 +8,7 @@ namespace MelodyMusicLibrary.ViewModels
         public string Title { get; set; }
         public int Duration { get; set; }
         public string Minutes { get; set; } // Calculated property for duration in minutes
-
+        public int AlbumId { get; set; }
         public string AlbumTitle { get; set; } // Displaying album title
 
         public string ArtistNames { get; set; } // Concatenated list of artist names
@@ -26,12 +26,13 @@ namespace MelodyMusicLibrary.ViewModels
             {
                 AlbumTitle = song.Album.Title;
                 AlbumCoverUrl = song.Album.CoverUrl;
+                AlbumId = song.Album.Id;
             }
 
             // Concatenate artist names into a single string
             if (song.SongArtists != null && song.SongArtists.Count > 0)
             {
-                ArtistNames = string.Join(", ", song.SongArtists.Select(sa => sa.Artist.Name));
+                ArtistNames = string.Join("</br> ", song.SongArtists.Select(sa => sa.Artist.Name));
             }
         }
     }

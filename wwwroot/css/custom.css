@@ -63,3 +63,16 @@ th:last-child {
     padding: 10px 20px;
     transition: background-color 0.3s, color 0.3s;
 }
+
+/* CSS */
+.gradient-text {
+    background-image: linear-gradient(to right, yellow, red, magenta, purple);
+    -webkit-background-clip: text; /* For Webkit browsers (Safari, Chrome, Edge) */
+    background-clip: text; /* Standard syntax */
+    color: transparent; /* Hide original text */
+}
+
+.gradient-text:hover {
+    background-position: 100% 0; /* Move gradient to fully reveal on hover */
+    text-decoration: underline solid 2px; /* Underline with solid 2px line */
+}
