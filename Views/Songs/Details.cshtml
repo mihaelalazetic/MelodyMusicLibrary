@@ -1,4 +1,4 @@
-﻿@model MelodyMusicLibrary.Models.Song
+﻿@model MelodyMusicLibrary.ViewModels.SongViewModel
 
 @{
     ViewData["Title"] = "Details";
@@ -6,31 +6,42 @@
 
 <h1>Details</h1>
 
-<div>
-    <h4>Song</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Title)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Title)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Duration)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Duration)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Album)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Album.Title)
-        </dd>
-    </dl>
+<div class="container mt-5">
+    <h1 class="table-title">Song Details</h1>
+    <div class="row">
+
+        <div class="col-md-8">
+            <dl class="row">
+                <dt class="col-sm-3">
+                    @Html.DisplayNameFor(model => model.Title)
+                </dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.Title)
+                </dd>
+                <dt class="col-sm-3">
+                    @Html.DisplayNameFor(model => model.Duration)
+                </dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.Duration)
+                </dd>
+                <dt class="col-sm-3">
+                    @Html.DisplayNameFor(model => model.AlbumTitle)
+                </dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.AlbumTitle)
+                </dd>
+                <dt class="col-sm-3">
+                    @Html.DisplayNameFor(model => model.ArtistNames)
+                </dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.ArtistNames)
+                </dd>
+            </dl>
+            <div>
+                <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-outline-success rounded-pill px-3 py-2">Edit</a>
+                <a asp-action="Index" class="btn btn-outline-secondary rounded-pill px-3 py-2">Back to List</a>
+            </div>
+        </div>
+    </div>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+

@@ -32,7 +32,6 @@ namespace MelodyMusicLibrary.Data
             base.OnModelCreating(modelBuilder);
 
 
-            // Configure Album - Artist relationship (AlbumArtist)
             modelBuilder.Entity<AlbumArtist>()
                 .HasKey(aa => new { aa.AlbumId, aa.ArtistId });
 
@@ -46,7 +45,6 @@ namespace MelodyMusicLibrary.Data
                 .WithMany(a => a.AlbumArtists)
                 .HasForeignKey(aa => aa.ArtistId);
 
-            // Configure Album - Genre relationship (AlbumGenre)
             modelBuilder.Entity<AlbumGenre>()
                 .HasKey(ag => new { ag.AlbumId, ag.GenreId });
 
@@ -60,7 +58,6 @@ namespace MelodyMusicLibrary.Data
                 .WithMany(g => g.AlbumGenres)
                 .HasForeignKey(ag => ag.GenreId);
 
-            // Configure Song - Artist relationship (SongArtist)
             modelBuilder.Entity<SongArtist>()
                 .HasKey(sa => new { sa.SongId, sa.ArtistId });
 
@@ -74,7 +71,6 @@ namespace MelodyMusicLibrary.Data
                 .WithMany(a => a.SongArtists)
                 .HasForeignKey(sa => sa.ArtistId);
 
-            // Configure Song - Genre relationship (SongGenre)
             modelBuilder.Entity<SongGenre>()
                 .HasKey(sg => new { sg.SongId, sg.GenreId });
 

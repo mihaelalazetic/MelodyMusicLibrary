@@ -3,9 +3,12 @@ using Microsoft.Extensions.DependencyInjection;
 using MelodyMusicLibrary.Data;
 using Microsoft.AspNetCore.Identity;
 using MelodyMusicLibrary.Areas.Identity.Data;
+using Microsoft.AspNetCore.Identity.UI.Services;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<MelodyContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("MelodyContext") ?? throw new InvalidOperationException("Connection string 'MelodyContext' not found.")));
+
+builder.Services.AddTransient<IEmailSender, EmailSender>();
 
 builder.Services.Configure<CookiePolicyOptions>(options =>
 {
@@ -13,6 +16,7 @@ builder.Services.Configure<CookiePolicyOptions>(options =>
     options.CheckConsentNeeded = context => true;
     options.MinimumSameSitePolicy = SameSiteMode.None;
 });
+
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddIdentity<MelodyUser, IdentityRole>().AddEntityFrameworkStores<MelodyContext>().AddDefaultTokenProviders();

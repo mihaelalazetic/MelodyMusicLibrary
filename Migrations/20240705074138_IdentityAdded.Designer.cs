@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MelodyMusicLibrary.Migrations
 {
     [DbContext(typeof(MelodyContext))]
-    [Migration("20240704232105_IdentityAdded")]
+    [Migration("20240705074138_IdentityAdded")]
     partial class IdentityAdded
     {
         /// <inheritdoc />

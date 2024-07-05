@@ -1,8 +1,8 @@
-﻿@model IEnumerable<MelodyMusicLibrary.Models.Song>
+﻿@model IEnumerable<MelodyMusicLibrary.ViewModels.SongViewModel>
 
 @{
     ViewData["Title"] = "Index";
-    Layout = "~/Views/Shared/_Layout.cshtml"; // Assuming you have a shared layout file
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <link rel="stylesheet" href="~/css/song.css" asp-append-version="true" />
@@ -11,31 +11,22 @@
     <div class="row mb-4 d-flex align-items-center justify-content-between">
         <div class="col d-inline-flex justify-content-md-start">
             <h1 class="table-title">Songs</h1>
-            <div style="margin-left:1rem; align-content:center;">
-                <a asp-action="Create" class="rounded-pill btn btn-outline-warning">+</a>
-            </div>
+            @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+            {
+                <div style="margin-left:1rem; align-content:center;">
+                    <a asp-action="Create" class="rounded-pill btn btn-outline-warning">+</a>
+                </div>
+            }
         </div>
-    @*     <div class="col-5">
-            <form asp-controller="Songs" asp-action="Index" method="get" class="d-inline-flex justify-content-center align-items-center">
-                <div class="form-group mr-2">
-                    <input type="text" asp-for="Title" placeholder="Search by Title" class="form-control" />
-                </div>
-                <div class="form-group mr-2">
-                    <input type="text" asp-for="Album" placeholder="Search by Album" class="form-control" />
-                </div>
-                <div class="form-group">
-                    <input type="submit" value="Filter" class="btn btn-primary" />
-                </div>
-            </form>
-        </div> *@
     </div>
 
     <table class="table table-dark table-hover custom-table">
         <thead>
             <tr>
-                <th>@Html.DisplayNameFor(model => model.Title)</th>
-                <th>@Html.DisplayNameFor(model => model.Duration)</th>
-                <th>@Html.DisplayNameFor(model => model.Album.Title)</th>
+                <th>Title</th>
+                <th>Duration</th>
+                <th>Album</th>
+                <th>Artists</th>
                 <th></th>
             </tr>
         </thead>
@@ -44,12 +35,16 @@
             {
                 <tr>
                     <td>@Html.DisplayFor(modelItem => item.Title)</td>
-                    <td>@Html.DisplayFor(modelItem => item.Duration)</td>
-                    <td>@Html.DisplayFor(modelItem => item.Album.Title)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Minutes)</td>
+                    <td>@Html.DisplayFor(modelItem => item.AlbumTitle)</td>
+                    <td>@Html.DisplayFor(modelItem => item.ArtistNames)</td>
                     <td>
-                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-success btn-sm rounded-pill px-3 py-2">Edit</a>
-                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-info btn-sm rounded-pill px-3 py-2 ml-1">Details</a>
-                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger btn-sm rounded-pill px-3 py-2 ml-1">Delete</a>
+                        @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                        {
+                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-success btn-sm rounded-pill px-3 py-2">Edit</a>
+                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-info btn-sm rounded-pill px-3 py-2 ml-1">Details</a>
+                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger btn-sm rounded-pill px-3 py-2 ml-1">Delete</a>
+                        }
                     </td>
                 </tr>
             }

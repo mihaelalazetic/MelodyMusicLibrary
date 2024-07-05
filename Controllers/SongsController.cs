@@ -23,8 +23,15 @@ namespace MelodyMusicLibrary.Controllers
         // GET: Songs
         public async Task<IActionResult> Index()
         {
-            var melodyContext = _context.Song.Include(s => s.Album);
-            return View(await melodyContext.ToListAsync());
+            var songs = _context.Song
+             .Include(s => s.Album)
+             .Include(s => s.SongArtists)
+                 .ThenInclude(sa => sa.Artist)
+             .ToList();
+
+            var viewModelList = songs.Select(song => new SongViewModel(song)).ToList();
+
+            return View(viewModelList);
         }
 
         // GET: Songs/Details/5
@@ -35,15 +42,20 @@ namespace MelodyMusicLibrary.Controllers
                 return NotFound();
             }
 
+
             var song = await _context.Song
-                .Include(s => s.Album)
+                 .Include(s => s.Album)
+                 .Include(s => s.SongArtists)
+                .ThenInclude(sa => sa.Artist)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (song == null)
             {
                 return NotFound();
             }
 
-            return View(song);
+            var viewModelList = new SongViewModel(song);
+
+            return View(viewModelList);
         }
 
         // GET: Songs/Create
@@ -143,6 +155,7 @@ namespace MelodyMusicLibrary.Controllers
         }
 
         // GET: Songs/Edit/5
+        [HttpGet("Edit/{id}")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -150,23 +163,43 @@ namespace MelodyMusicLibrary.Controllers
                 return NotFound();
             }
 
-            var song = await _context.Song.FindAsync(id);
+            var song = await _context.Song
+                .Include(s => s.SongArtists)
+                .FirstOrDefaultAsync(s => s.Id == id);
+
             if (song == null)
             {
                 return NotFound();
             }
+
+            var viewModel = new SongEditViewModel
+            {
+                Id = song.Id,
+                Title = song.Title,
+                Duration = song.Duration,
+                AlbumId = song.AlbumId,
+                ArtistList = await _context.Artist.OrderBy(a => a.Name)
+                                                  .Select(a => new SelectListItem
+                                                  {
+                                                      Value = a.Id.ToString(),
+                                                      Text = a.Name
+                                                  }).ToListAsync(),
+                SelectedArtistId = song.SongArtists.FirstOrDefault()?.ArtistId ?? 0 // Assuming only one artist can be selected
+            };
+
             ViewData["AlbumId"] = new SelectList(_context.Album, "Id", "Title", song.AlbumId);
-            return View(song);
+
+            return View(viewModel);
         }
 
+
+
         // POST: Songs/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
+        [HttpPost("Edit/{id}")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Duration,AlbumId")] Song song)
+        public async Task<IActionResult> Edit(int id, SongEditViewModel viewModel)
         {
-            if (id != song.Id)
+            if (id != viewModel.Id)
             {
                 return NotFound();
             }
@@ -175,12 +208,39 @@ namespace MelodyMusicLibrary.Controllers
             {
                 try
                 {
+                    var song = await _context.Song
+                        .Include(s => s.SongArtists)
+                        .FirstOrDefaultAsync(s => s.Id == id);
+
+                    if (song == null)
+                    {
+                        return NotFound();
+                    }
+
+                    song.Title = viewModel.Title;
+                    song.Duration = viewModel.Duration;
+                    song.AlbumId = viewModel.AlbumId;
+
+                    // Update selected artist
+                    if (viewModel.SelectedArtistId != 0)
+                    {
+                        // Clear existing artists and add the new one
+                        song.SongArtists.Clear();
+                        song.SongArtists.Add(new SongArtist { ArtistId = viewModel.SelectedArtistId });
+                    }
+                    else
+                    {
+                        song.SongArtists.Clear(); // No artist selected, clear the association
+                    }
+
                     _context.Update(song);
                     await _context.SaveChangesAsync();
+
+                    return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!SongExists(song.Id))
+                    if (!SongExists(viewModel.Id))
                     {
                         return NotFound();
                     }
@@ -189,10 +249,18 @@ namespace MelodyMusicLibrary.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
             }
-            ViewData["AlbumId"] = new SelectList(_context.Album, "Id", "Title", song.AlbumId);
-            return View(song);
+
+            // If ModelState is not valid, re-populate the dropdowns
+            viewModel.ArtistList = await _context.Artist.OrderBy(a => a.Name)
+                                                        .Select(a => new SelectListItem
+                                                        {
+                                                            Value = a.Id.ToString(),
+                                                            Text = a.Name
+                                                        }).ToListAsync();
+
+            ViewData["AlbumId"] = new SelectList(_context.Album, "Id", "Title", viewModel.AlbumId);
+            return View(viewModel);
         }
 
         // GET: Songs/Delete/5

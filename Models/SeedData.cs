@@ -18,6 +18,8 @@ namespace MelodyMusicLibrary.Data
             //Add Admin Role
             var roleCheck = await RoleManager.RoleExistsAsync("Admin");
             if (!roleCheck) { roleResult = await RoleManager.CreateAsync(new IdentityRole("Admin")); }
+            var roleUserCheck = await RoleManager.RoleExistsAsync("User");
+            if (!roleUserCheck) { roleResult = await RoleManager.CreateAsync(new IdentityRole("User")); }
 
             MelodyUser user = await UserManager.FindByEmailAsync("admin@mvcmovie.com");
             if (user == null)
@@ -29,6 +31,17 @@ namespace MelodyMusicLibrary.Data
                 IdentityResult chkUser = await UserManager.CreateAsync(User, userPWD);
                 //Add default User to Role Admin      
                 if (chkUser.Succeeded) { var result1 = await UserManager.AddToRoleAsync(User, "Admin"); }
+            }
+            MelodyUser user2 = await UserManager.FindByEmailAsync("admin@mvcmovie.com");
+            if (user2 == null)
+            {
+                var User = new MelodyUser();
+                User.Email = "mihaela@melody.com";
+                User.UserName = "mihaela";
+                string userPWD = "123";
+                IdentityResult chkUser = await UserManager.CreateAsync(User, userPWD);
+                //Add default User to Role Admin      
+                if (chkUser.Succeeded) { var result1 = await UserManager.AddToRoleAsync(User, "User"); }
             }
         }
         public static void Initialize(IServiceProvider serviceProvider)
@@ -45,12 +58,12 @@ namespace MelodyMusicLibrary.Data
                 // Seed genres
                 var genres = new Genre[]
                 {
-                new Genre { Name = "Pop" },
-                new Genre { Name = "Rock" },
-                new Genre { Name = "Hip-Hop" },
-                new Genre { Name = "Electronic" },
-                new Genre { Name = "Alternative" },
-                new Genre { Name = "R&B" }
+                new Genre { Name = "Pop", ImageUrl="/images/genres/Pop.png" },
+                new Genre { Name = "Rock", ImageUrl="/images/genres/Rock.png" },
+                new Genre { Name = "Hip-Hop" , ImageUrl = "/images/genres/Hip-Hop.png"},
+                new Genre { Name = "Electronic" , ImageUrl = "/images/genres/Electronic.png"},
+                new Genre { Name = "Alternative" , ImageUrl = "/images/genres/Alternative.png"},
+                new Genre { Name = "R&B" , ImageUrl = "/images/genres/R&B.png"}
                 };
                 foreach (Genre g in genres)
                 {

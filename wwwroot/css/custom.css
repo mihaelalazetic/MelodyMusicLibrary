@@ -63,8 +63,3 @@ th:last-child {
     padding: 10px 20px;
     transition: background-color 0.3s, color 0.3s;
 }
-
-    #login:hover, #register:hover {
-        background: linear-gradient(to right, #f5ec33, #fe9d22, #fd3297, #C5107A);
-        color: #333; /* Dark text color */
-    }

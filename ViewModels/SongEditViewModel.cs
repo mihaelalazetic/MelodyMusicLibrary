@@ -11,9 +11,10 @@ namespace MelodyMusicLibrary.ViewModels
         public int Duration { get; set; }
         public int AlbumId { get; set; }
 
-        public List<SelectListItem> ArtistList { get; set; } // List of artists for dropdown
+        public List<SelectListItem> ArtistList { get; set; } = new List<SelectListItem>();// List of artists for dropdown
 
         [Display(Name = "Select Artist")]
         public int SelectedArtistId { get; set; } // Selected artist ID
+
     }
 }
