@@ -18,9 +18,9 @@ namespace MelodyMusicLibrary.Models
         public string CoverUrl { get; set; }
 
 
-        public ICollection<Song> Songs { get; set; } = new List<Song>(); // Ensure Songs is initialized
+        public ICollection<Song> Songs { get; set; } = new List<Song>(); 
         [Display(Name = "Artists")]
-        public ICollection<AlbumArtist> AlbumArtists { get; set; } = new List<AlbumArtist>(); // Ensure AlbumArtists is initialized
+        public ICollection<AlbumArtist> AlbumArtists { get; set; } = new List<AlbumArtist>(); 
         [Display(Name = "Genres")]
         public ICollection<AlbumGenre> AlbumGenres { get; set; } = new List<AlbumGenre>(); 
 

@@ -15,7 +15,7 @@ namespace MelodyMusicLibrary.Data
             var RoleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
             var UserManager = serviceProvider.GetRequiredService<UserManager<MelodyUser>>();
             IdentityResult roleResult;
-            //Add Admin Role
+            //Add Admin and User Role
             var roleCheck = await RoleManager.RoleExistsAsync("Admin");
             if (!roleCheck) { roleResult = await RoleManager.CreateAsync(new IdentityRole("Admin")); }
             var roleUserCheck = await RoleManager.RoleExistsAsync("User");
