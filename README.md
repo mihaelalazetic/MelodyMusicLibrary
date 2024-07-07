@@ -1,4 +1,5 @@
 Melody Music Library
+
 Melody Music Library is a web application built with ASP.NET Core MVC, designed to manage albums, artists, songs, genres, and playback functionality similar to popular music streaming services.
 
 Features
@@ -9,6 +10,7 @@ Genre Classification: Categorize music by genres with visual representation.
 Playback Feature: Play music directly within the application.
 User Authentication: Register and authenticate users with ASP.NET Core Identity.
 Admin Dashboard: Manage all aspects of the music library with role-based authorization.
+
 Technologies Used
 ASP.NET Core MVC: Framework for building web applications.
 Entity Framework Core: Object-relational mapping (ORM) framework for database interactions.
