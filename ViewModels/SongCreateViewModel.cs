@@ -10,6 +10,8 @@ namespace MelodyMusicLibrary.ViewModels
 
         [Required(ErrorMessage = "Duration is required")]
         public int Duration { get; set; }
+        public string YouTubeVideoId { get; set; }
+
 
         [Display(Name = "Album")]
         public int AlbumId { get; set; }

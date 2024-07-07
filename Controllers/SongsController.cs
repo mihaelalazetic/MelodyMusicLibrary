@@ -101,7 +101,8 @@ namespace MelodyMusicLibrary.Controllers
                 {
                     Title = viewModel.Title,
                     Duration = viewModel.Duration,
-                    AlbumId = viewModel.AlbumId
+                    AlbumId = viewModel.AlbumId,
+                    YouTubeVideoId = viewModel.YouTubeVideoId,
                 };
 
                 // Add selected artists to the song
