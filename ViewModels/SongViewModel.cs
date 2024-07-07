@@ -7,7 +7,8 @@ namespace MelodyMusicLibrary.ViewModels
         public int Id { get; set; }
         public string Title { get; set; }
         public int Duration { get; set; }
-        public string Minutes { get; set; } // Calculated property for duration in minutes
+        public string Minutes { get; set; }
+        public string YouTubeVideoId { get; set; }
         public int AlbumId { get; set; }
         public string AlbumTitle { get; set; } // Displaying album title
 
@@ -27,6 +28,7 @@ namespace MelodyMusicLibrary.ViewModels
                 AlbumTitle = song.Album.Title;
                 AlbumCoverUrl = song.Album.CoverUrl;
                 AlbumId = song.Album.Id;
+                YouTubeVideoId = song.YouTubeVideoId;
             }
 
             // Concatenate artist names into a single string

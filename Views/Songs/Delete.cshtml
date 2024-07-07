@@ -4,36 +4,38 @@
     ViewData["Title"] = "Delete";
 }
 
-<h1>Delete</h1>
+<h1 class="table-title">Delete</h1>
 
-<h3>Are you sure you want to delete this?</h3>
+<h3 class="text-light">Are you sure you want to delete this song?</h3>
 <div>
-    <h4>Song</h4>
     <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Title)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Title)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Duration)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Duration)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Album)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Album.Title)
-        </dd>
-    </dl>
-    
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="Id" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
-    </form>
+    <div class="container">
+        <h3 class="table-title">Song Details</h3>
+        <dl class="row">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Title)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Title)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Duration)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Duration)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Album)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Album.Title)
+            </dd>
+        </dl>
+
+        <form asp-action="Delete" class="m-3">
+            <input type="hidden" asp-for="Id" />
+            <button type="submit" class="btn btn-outline-danger rounded-pill px-3 py-2">Delete</button> |
+            <a asp-action="Index" class="btn btn-outline-secondary rounded-pill px-3 py-2">Back to List</a>
+        </form>
+    </div>
 </div>

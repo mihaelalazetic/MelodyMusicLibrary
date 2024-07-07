@@ -54,7 +54,7 @@ public class GenresController : Controller
         {
             string fileName = model.Name;
             await SaveImageFile(model.ImageFile, fileName);
-            
+
             Genre genre = new Genre
             {
                 Name = model.Name,
@@ -95,27 +95,21 @@ public class GenresController : Controller
             return NotFound();
         }
 
-        foreach (var key in ModelState.Keys)
+        // Check the current state of the genre
+        var genre = await _context.Genre.FindAsync(id);
+        if (genre == null)
         {
-            var state = ModelState[key];
-            foreach (var error in state.Errors)
-            {
-                Console.WriteLine($"Key: {key}, Error: {error.ErrorMessage}");
-            }
+            return NotFound();
         }
+
+        // Check if ModelState is valid
         if (ModelState.IsValid)
         {
-            var genre = await _context.Genre.FindAsync(id);
-            if (genre == null)
-            {
-                return NotFound();
-            }
-
-            string fileName = null;
+            // Update only if ImageFile is provided or if there is no current image
             if (model.ImageFile != null)
             {
-                fileName = model.Name;
-                await SaveImageFile(model.ImageFile,fileName);
+                string fileName = model.Name; // Or any logic to generate a unique file name
+                await SaveImageFile(model.ImageFile, fileName);
                 genre.ImageUrl = "/images/genres/" + fileName;
             }
 
@@ -134,8 +128,10 @@ public class GenresController : Controller
             }
         }
 
+        // If ModelState is not valid, return the view with errors
         return View(model);
     }
+
 
 
     // GET: Genres/Delete/5
@@ -166,7 +162,7 @@ public class GenresController : Controller
         return RedirectToAction(nameof(Index));
     }
 
-    private async Task<string> SaveImageFile(IFormFile imageFile,string genreName)
+    private async Task<string> SaveImageFile(IFormFile imageFile, string genreName)
     {
         if (imageFile == null || imageFile.Length == 0)
         {

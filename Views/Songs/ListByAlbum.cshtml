@@ -6,7 +6,7 @@
 }
 
 <div class="container mt-5">
-    <h1 class="table-title text-center">Songs in Album @(String.Concat(Model.Select(x=>x.Album.Title).ToList()))</h1>
+    <h1 class="table-title text-center">Songs in Album @(String.Concat(Model.Select(x => x.Album.Title).ToList()))</h1>
     <div class="table-responsive">
         <table class="table table-dark table-hover custom-table">
             <thead>
@@ -14,21 +14,30 @@
                     <th></th>
                     <th>Title</th>
                     <th>Duration</th>
-                     @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
-                        {
-                            <th>Actions</th>
-                        }
+                    @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                    {
+                        <th>Actions</th>
+                    }
                 </tr>
             </thead>
             <tbody>
                 @foreach (var song in Model)
                 {
                     <tr>
-                        <td><i class="fa fa-play"></i></td>
+                        <td>
+                            <button class="play-button btn btn-outline-warning btn-sm" data-video-id="@song.YouTubeVideoId">
+                                <i class="fa fa-play"></i>
+                            </button>
+                            <button class="pause-button btn btn-outline-warning btn-sm d-none" data-video-id="@song.YouTubeVideoId">
+                                <i class="fa fa-pause"></i>
+                            </button>
+                            <button class="stop-button btn btn-outline-warning btn-sm d-none" data-video-id="@song.YouTubeVideoId">
+                                <i class="fa fa-stop"></i>
+                            </button>
+                        </td>
                         <td>@song.Title</td>
                         <td>@song.Minutes</td>
-                        @if (
-                            .Identity.IsAuthenticated && User.IsInRole("Admin"))
+                        @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
                         {
                             <td>
                                 <a asp-action="RemoveSongFromAlbum" asp-route-id="@song.AlbumId" asp-route-songId="@song.Id" class="btn btn-outline-danger btn-sm rounded-pill px-3 py-2">Remove Song</a>
@@ -40,3 +49,89 @@
         </table>
     </div>
 </div>
+
+<div id="player"></div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://www.youtube.com/iframe_api"></script>
+    <script>
+        let player;
+        let pausedAt = 0;
+        let currentVideoId = '';
+
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('player', {
+                height: '0',
+                width: '0',
+                events: {
+                    'onReady': onPlayerReady,
+                    'onStateChange': onPlayerStateChange
+                }
+            });
+        }
+
+        function onPlayerReady(event) {
+            // Player is ready
+        }
+
+        function onPlayerStateChange(event) {
+            if (event.data == YT.PlayerState.PLAYING) {
+                // Video is playing
+            }
+        }
+
+        function playVideo(videoId) {
+            if (currentVideoId && currentVideoId !== videoId) {
+                stopVideo();
+            }
+            currentVideoId = videoId;
+            if (player && player.loadVideoById) {
+                player.loadVideoById({ videoId: videoId, startSeconds: pausedAt });
+                player.playVideo();
+            }
+        }
+
+        function pauseVideo() {
+            if (player && player.pauseVideo) {
+                pausedAt = player.getCurrentTime();
+                player.pauseVideo();
+            }
+        }
+
+        function stopVideo() {
+            if (player && player.stopVideo) {
+                pausedAt = 0;
+                player.stopVideo();
+                currentVideoId = '';
+            }
+        }
+
+        $(document).ready(function () {
+            $(".js-example-basic-multiple").select2();
+
+            $('.play-button').on('click', function () {
+                const videoId = $(this).data('video-id');
+                playVideo(videoId);
+                $(this).addClass('d-none');
+                $(this).siblings('.pause-button, .stop-button').removeClass('d-none');
+                $('.pause-button, .stop-button').not($(this).siblings('.pause-button, .stop-button')).addClass('d-none');
+                $('.play-button').not($(this)).removeClass('d-none');
+            });
+
+            $('.pause-button').on('click', function () {
+                pauseVideo();
+                $(this).addClass('d-none');
+                $(this).siblings('.play-button').removeClass('d-none');
+            });
+
+            $('.stop-button').on('click', function () {
+                stopVideo();
+                $(this).siblings('.play-button').removeClass('d-none');
+                $(this).siblings('.pause-button').addClass('d-none');
+                $(this).addClass('d-none');
+            });
+        });
+    </script>
+}

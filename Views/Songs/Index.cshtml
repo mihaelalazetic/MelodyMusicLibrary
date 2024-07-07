@@ -35,7 +35,17 @@
             @foreach (var item in Model)
             {
                 <tr>
-                    <td><i class="fa fa-play"></i></td>
+                    <td>
+                        <button class="play-button btn btn-outline-warning btn-sm" data-video-id="@item.YouTubeVideoId">
+                            <i class="fa fa-play"></i>
+                        </button>
+                        <button class="pause-button btn btn-outline-warning btn-sm d-none" data-video-id="@item.YouTubeVideoId">
+                            <i class="fa fa-pause"></i>
+                        </button>
+                        <button class="stop-button btn btn-outline-warning btn-sm d-none" data-video-id="@item.YouTubeVideoId">
+                            <i class="fa fa-stop"></i>
+                        </button>
+                    </td>
                     <td>
                         <a asp-controller="Songs" asp-action="Details" asp-route-id="@item.Id" class="btn-outline-warning text-decoration-none p-1" style="border-radius: 20px">
                             @Html.DisplayFor(modelItem => item.Title)
@@ -44,20 +54,18 @@
                     <td>@Html.DisplayFor(modelItem => item.Minutes)</td>
                     <td>
                         <a asp-controller="Albums" asp-action="Details" asp-route-id="@item.AlbumId" class="btn-outline-warning text-decoration-none p-1" style="border-radius: 20px">
-
                             @Html.DisplayFor(modelItem => item.AlbumTitle)
                         </a>
-                        </td>
+                    </td>
                     <td>@Html.DisplayFor(modelItem => item.ArtistNames)</td>
                     <td>
                         @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
                         {
                             <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-success btn-sm rounded-pill px-3 py-2">Edit</a>
                         }
-                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-info btn-sm rounded-pill px-3 py-2 ml-1">Details</a>
+                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-info btn-sm rounded-pill px-3 py-2 ml-1">Details</a>
                         @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
                         {
-                           
                             <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger btn-sm rounded-pill px-3 py-2 ml-1">Delete</a>
                         }
                     </td>
@@ -67,12 +75,88 @@
     </table>
 </div>
 
+<div id="player"></div>
+
 @section Scripts {
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://www.youtube.com/iframe_api"></script>
     <script>
+        let player;
+        let pausedAt = 0;
+        let currentVideoId = '';
+
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('player', {
+                height: '0',
+                width: '0',
+                events: {
+                    'onReady': onPlayerReady,
+                    'onStateChange': onPlayerStateChange
+                }
+            });
+        }
+
+        function onPlayerReady(event) {
+            // Player is ready
+        }
+
+        function onPlayerStateChange(event) {
+            if (event.data == YT.PlayerState.PLAYING) {
+                // Video is playing
+            }
+        }
+
+        function playVideo(videoId) {
+            if (currentVideoId && currentVideoId !== videoId) {
+                stopVideo();
+            }
+            currentVideoId = videoId;
+            if (player && player.loadVideoById) {
+                player.loadVideoById({ videoId: videoId, startSeconds: pausedAt });
+                player.playVideo();
+            }
+        }
+
+        function pauseVideo() {
+            if (player && player.pauseVideo) {
+                pausedAt = player.getCurrentTime();
+                player.pauseVideo();
+            }
+        }
+
+        function stopVideo() {
+            if (player && player.stopVideo) {
+                pausedAt = 0;
+                player.stopVideo();
+                currentVideoId = '';
+            }
+        }
+
         $(document).ready(function () {
             $(".js-example-basic-multiple").select2();
+
+            $('.play-button').on('click', function () {
+                const videoId = $(this).data('video-id');
+                playVideo(videoId);
+                $(this).addClass('d-none');
+                $(this).siblings('.pause-button, .stop-button').removeClass('d-none');
+                $('.pause-button, .stop-button').not($(this).siblings('.pause-button, .stop-button')).addClass('d-none');
+                $('.play-button').not($(this)).removeClass('d-none');
+            });
+
+            $('.pause-button').on('click', function () {
+                pauseVideo();
+                $(this).addClass('d-none');
+                $(this).siblings('.play-button').removeClass('d-none');
+            });
+
+            $('.stop-button').on('click', function () {
+                stopVideo();
+                $(this).siblings('.play-button').removeClass('d-none');
+                $(this).siblings('.pause-button').addClass('d-none');
+                $(this).addClass('d-none');
+            });
         });
     </script>
 }

@@ -13,7 +13,7 @@ namespace MelodyMusicLibrary.Models
         [Required]
         [Range(1, int.MaxValue, ErrorMessage = "Duration must be greater than zero.")]
         public int Duration { get; set; } // in seconds
-
+        public string YouTubeVideoId { get; set; }
         public int AlbumId { get; set; }
         public Album? Album { get; set; }
         public ICollection<SongArtist> SongArtists { get; set; }

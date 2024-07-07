@@ -9,18 +9,18 @@
     <div class="col-md-4">
         <form asp-action="Edit" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
+            <input type="hidden" name="Id" value="@Model.Id" />
 
             <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control bg-dark text-white" />
-                <span asp-validation-for="Name" class="text-danger"></span>
+                <label for="Name" class="control-label">Name</label>
+                <input id="Name" name="Name" value="@Model.Name" class="form-control bg-dark text-white" />
+                <span class="text-danger">@Html.ValidationMessageFor(m => m.Name)</span>
             </div>
 
             <div class="form-group">
-                <label asp-for="ImageFile" class="control-label">Upload Image</label>
-                <input asp-for="ImageFile" type="file" class="form-control" onchange="previewImage(event)" />
-                <span asp-validation-for="ImageFile" class="text-danger"></span>
+                <label for="ImageFile" class="control-label">Upload Image</label>
+                <input id="ImageFile" name="ImageFile" type="file" class="form-control" onchange="previewImage(event)" />
+                <span class="text-danger">@Html.ValidationMessageFor(m => m.ImageFile)</span>
             </div>
 
             <div class="form-group">
@@ -43,9 +43,6 @@
                 </div>
             </div>
 
-
- 
-
             <div class="form-group">
                 <button type="submit" class="btn btn-outline-warning">Save</button>
                 <a asp-action="Index" class="btn btn-secondary">Cancel</a>
@@ -55,9 +52,8 @@
 </div>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    <partial name="_ValidationScriptsPartial" />
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         function previewImage(event) {
@@ -66,6 +62,14 @@
             reader.onload = function () {
                 const imagePreview = document.getElementById('imagePreview');
                 imagePreview.src = reader.result;
+
+                // Check if there is already an image present
+                const currentImage = document.getElementById('currentImage');
+                if (currentImage.src !== "") {
+                    document.getElementById('ImageFile').removeAttribute('required');
+                } else {
+                    document.getElementById('ImageFile').setAttribute('required', 'required');
+                }
             }
             if (input.files && input.files[0]) {
                 reader.readAsDataURL(input.files[0]);
